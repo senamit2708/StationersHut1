@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Switch;
 
@@ -102,6 +103,20 @@ public class StationaryContentProvider extends ContentProvider{
     @Override
     public Uri insert( Uri uri,  ContentValues contentValues) {
         Uri newUri;
+
+        String productName = contentValues.getAsString(ProductDesriptionEntry.COLUMN_PRODUCT_NAME);
+        if (TextUtils.isEmpty(productName)){
+            throw new IllegalArgumentException("product name is empty");
+        }
+        Integer productPrice = contentValues.getAsInteger(ProductDesriptionEntry.COLUMN_PRODUCT_PRICE);
+        //when i used int here...null value condition its not accepting
+        if (productPrice<0 || productPrice==null){
+            throw new IllegalArgumentException("Product price is empty");
+        }
+        Integer productQuantity = contentValues.getAsInteger(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY);
+        if (productQuantity<0 || productQuantity==null){
+            throw new IllegalArgumentException("Product quantity is empty");
+        }
 
         int match = sUriMatcher.match(uri);
         switch (match){

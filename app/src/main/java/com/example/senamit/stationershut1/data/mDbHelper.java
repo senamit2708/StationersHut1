@@ -12,7 +12,7 @@ import com.example.senamit.stationershut1.data.StationaryContract.*;
 public class mDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "Stationary";
-    public static final int DATABASE_VERSION = 8;
+    public static final int DATABASE_VERSION = 9;
 
     //so everytime we r creating instance of this class we have to put the context as its argument...
     public mDbHelper(Context context) {

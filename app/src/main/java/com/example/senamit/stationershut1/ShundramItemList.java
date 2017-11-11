@@ -82,37 +82,7 @@ public class ShundramItemList extends AppCompatActivity {
 
     }
 
-//    private void insertProductDescription(){
-//
-//        stationaryDbHelper = new mDbHelper(this);
-//        SQLiteDatabase database = stationaryDbHelper.getWritableDatabase();
-//
-//        edtProductName = (EditText)findViewById(R.id.edt_product_name);
-//        edtProductPrice = (EditText)findViewById(R.id.edt_product_price);
-//        edtProductQuanitity = (EditText)findViewById(R.id.edt_product_quantity);
-//
-//        String productName = edtProductName.toString().trim();
-//        String productPrice = edtProductPrice.toString().trim();
-//        String productQuanitity = edtProductQuanitity.toString().trim();
-//
-//        ContentValues values = new ContentValues();
-//        values.put(ProductDesriptionEntry.COLUMN_PRODUCT_NAME, productName);
-//        values.put(ProductDesriptionEntry.COLUMN_PRODUCT_PRICE, productPrice);
-//        values.put(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY, productQuanitity);
-//
-//        long num  = database.insert(ProductDesriptionEntry.TABLE_NAME,null,values);
-//
-//        if (num==-1){
-//            Toast.makeText(ShundramItemList.this, "Data Not inserted Successfully", Toast.LENGTH_SHORT);
-//        }
-//        else {
-//            Toast.makeText(ShundramItemList.this, "Data inserted Successfully", Toast.LENGTH_SHORT);
-////            Intent intent = new Intent(ShundramItemList.this, MainActivity.class);
-////            startActivity(intent);
-//        }
-//
-//
-//    }
+
 
 
 }

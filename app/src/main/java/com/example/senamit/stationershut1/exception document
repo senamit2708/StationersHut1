@@ -39,3 +39,10 @@ long parseId (Uri contentUri)
 Converts the last path segment to a long.
 
 
+
+
+ Integer productPrice = contentValues.getAsInteger(ProductDesriptionEntry.COLUMN_PRODUCT_PRICE);
+        //when i used int here...null value condition its not accepting
+        if (productPrice<0 || productPrice==null){
+            throw new IllegalArgumentException("Product price is empty");
+        }
