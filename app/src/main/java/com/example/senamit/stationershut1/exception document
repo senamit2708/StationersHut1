@@ -28,3 +28,14 @@ attribute name of content provider
 
 To avoid conflicts, authority names should use a Java-style naming convention (such as com.example.provider.cartoonprovider). Typically, it's the name of the ContentProvider subclass that implements the provider
 There is no default.
+
+
+ContentUris.parseId(uri)
+parseId
+https://developer.android.com/reference/android/content/ContentUris.html#parseId(android.net.Uri)
+
+added in API level 1
+long parseId (Uri contentUri)
+Converts the last path segment to a long.
+
+

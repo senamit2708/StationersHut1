@@ -1,13 +1,17 @@
 package com.example.senamit.stationershut1.data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.Switch;
 
+import com.example.senamit.stationershut1.data.StationaryContract.*;
 /**
  * Created by senamit on 11/11/17.
  */
@@ -15,6 +19,7 @@ import android.support.annotation.Nullable;
 public class StationaryContentProvider extends ContentProvider{
 
     private mDbHelper stationaryDbHelper;
+    Cursor cursor;
     //creating constant value for the tag of uri
     private static final int PRODUCTDESCRIPTION = 100;
     private static final int PRODUCTDESCRIPTION_ID= 101;
@@ -37,8 +42,48 @@ public class StationaryContentProvider extends ContentProvider{
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
-        return null;
+    public Cursor query( Uri uri,  String[] projection,  String selection, String[] selectionArgs, String sortOrder) {
+
+        SQLiteDatabase database = stationaryDbHelper.getWritableDatabase();
+      int match = sUriMatcher.match(uri);
+
+        switch (match){
+
+            case PRODUCTDESCRIPTION:
+
+                //here we dont have any where clause so..no id is here...we have to retrive data from the complete table.
+
+                cursor = database.query(StationaryContract.ProductDesriptionEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case PRODUCTDESCRIPTION_ID:
+
+                //here we have where claue ..so lets set the selection and selectionArgs..
+                selection = ProductDesriptionEntry._ID+ "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+
+                cursor = database.query(StationaryContract.ProductDesriptionEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+
+                break;
+
+            default:
+
+                throw new IllegalArgumentException("bad uri ...."+  uri);
+
+        }
+
+        return cursor;
     }
 
     @Nullable
