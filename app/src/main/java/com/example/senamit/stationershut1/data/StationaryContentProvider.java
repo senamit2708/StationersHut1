@@ -2,6 +2,7 @@ package com.example.senamit.stationershut1.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -14,6 +15,18 @@ import android.support.annotation.Nullable;
 public class StationaryContentProvider extends ContentProvider{
 
     private mDbHelper stationaryDbHelper;
+    //creating constant value for the tag of uri
+    private static final int PRODUCTDESCRIPTION = 100;
+    private static final int PRODUCTDESCRIPTION_ID= 101;
+
+    //creating UriMatcher
+    private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+    static {
+
+        sUriMatcher.addURI(StationaryContract.CONTENT_AUTHORITY, StationaryContract.PATH_PRODUCTdESCRIPTIONENTRY, PRODUCTDESCRIPTION);
+        sUriMatcher.addURI(StationaryContract.CONTENT_AUTHORITY, StationaryContract.PATH_PRODUCTdESCRIPTIONENTRY+"/#", PRODUCTDESCRIPTION_ID);
+    }
 
     @Override
     public boolean onCreate() {
