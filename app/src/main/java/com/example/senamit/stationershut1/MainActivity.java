@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
        setupEvenlyDistributedToolbar();
 
+        stationaryDbHelper = new mDbHelper(MainActivity.this);
 
         txtProductDetails = (TextView)findViewById(R.id.txt_product_description);
         btnAddProduct = (Button) findViewById(R.id.btn_add_product);
@@ -66,23 +67,27 @@ public class MainActivity extends AppCompatActivity {
     private Cursor readProducteDesctiption() {
         Cursor cursor;
 
-        stationaryDbHelper = new mDbHelper(MainActivity.this);
 
-        SQLiteDatabase database  = stationaryDbHelper.getReadableDatabase();
-//        cursor = database.rawQuery("SELECT * FROM " + ProductDesriptionEntry.TABLE_NAME, null);
-//        int num =  cursor.getCount();
-//        productCount.setText("The total num is" + num);
+
+//        SQLiteDatabase database  = stationaryDbHelper.getReadableDatabase();
+
 
         String[] projection = {ProductDesriptionEntry._ID, ProductDesriptionEntry.COLUMN_PRODUCT_NAME, ProductDesriptionEntry.COLUMN_PRODUCT_PRICE,
         ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY};
-       cursor = database.query(ProductDesriptionEntry.TABLE_NAME,
+//       cursor = database.query(ProductDesriptionEntry.TABLE_NAME,
+//                projection,
+//                null,
+//                null,
+//                null,
+//                null,
+//                null);
+
+        cursor = getContentResolver().query(
+                ProductDesriptionEntry.CONTENT_URI,
                 projection,
                 null,
                 null,
-                null,
-                null,
-                null);
-
+                null );
 
         return cursor;
     }

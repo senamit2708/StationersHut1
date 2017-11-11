@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.Switch;
 
 import com.example.senamit.stationershut1.data.StationaryContract.*;
@@ -17,6 +18,8 @@ import com.example.senamit.stationershut1.data.StationaryContract.*;
  */
 
 public class StationaryContentProvider extends ContentProvider{
+
+    public static final String LOG_TAG  = StationaryContentProvider.class.getSimpleName();
 
     private mDbHelper stationaryDbHelper;
     Cursor cursor;
@@ -60,6 +63,8 @@ public class StationaryContentProvider extends ContentProvider{
                         null,
                         null,
                         sortOrder);
+                Log.i(LOG_TAG, "inside complete table");
+
                 break;
             case PRODUCTDESCRIPTION_ID:
 
@@ -74,6 +79,7 @@ public class StationaryContentProvider extends ContentProvider{
                         null,
                         null,
                         sortOrder);
+                Log.i(LOG_TAG, "Inside speical condition of query table");
 
                 break;
 
