@@ -4,8 +4,10 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +17,8 @@ import com.example.senamit.stationershut1.data.*;
 import com.example.senamit.stationershut1.data.StationaryContract.*;
 
 public class ShundramItemList extends AppCompatActivity {
+
+    public static final String LOG_TAG = ShundramItemList.class.getSimpleName();
 
     mDbHelper stationaryDbHelper;
     EditText edtProductName;
@@ -57,13 +61,17 @@ public class ShundramItemList extends AppCompatActivity {
                 values.put(ProductDesriptionEntry.COLUMN_PRODUCT_PRICE, prodcutPrice);
                 values.put(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY, productQuantity);
 
-                long num  = database.insert(ProductDesriptionEntry.TABLE_NAME,null,values);
 
-                if (num==-1){
-                    Toast.makeText(ShundramItemList.this, "Data Not inserted Successfully", Toast.LENGTH_SHORT);
+
+                Uri newUri = getContentResolver().insert(ProductDesriptionEntry.CONTENT_URI, values);
+
+                if (newUri == null){
+
+                    Log.i(LOG_TAG,"insertion unsuccessful  "+ newUri);
                 }
                 else {
-                    Toast.makeText(ShundramItemList.this, "Data inserted Successfully", Toast.LENGTH_SHORT);
+                    Log.i(LOG_TAG,"insertion successful  "+ newUri);
+
                     finish();
 
                 }

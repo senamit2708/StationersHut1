@@ -100,8 +100,36 @@ public class StationaryContentProvider extends ContentProvider{
 
     @Nullable
     @Override
-    public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-        return null;
+    public Uri insert( Uri uri,  ContentValues contentValues) {
+        Uri newUri;
+
+        int match = sUriMatcher.match(uri);
+        switch (match){
+
+            case PRODUCTDESCRIPTION:
+             newUri =   insertProductDescription(uri, contentValues);
+                break;
+            default:
+                throw new IllegalArgumentException("the uri used to insert is bad "+ uri);
+
+
+        }
+
+
+        return newUri;
+    }
+
+    private Uri insertProductDescription(Uri uri, ContentValues contentValues) {
+        SQLiteDatabase database = stationaryDbHelper.getWritableDatabase();
+     long id=    database.insert(ProductDesriptionEntry.TABLE_NAME, null, contentValues);
+        if(id== -1){
+            Log.i(LOG_TAG, "unsuceesful insertion of new product");
+            return null;
+        }
+        else {
+            return ContentUris.withAppendedId(uri, id);
+        }
+
     }
 
     @Override
