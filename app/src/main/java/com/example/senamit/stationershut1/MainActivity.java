@@ -74,13 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
         String[] projection = {ProductDesriptionEntry._ID, ProductDesriptionEntry.COLUMN_PRODUCT_NAME, ProductDesriptionEntry.COLUMN_PRODUCT_PRICE,
         ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY};
-//       cursor = database.query(ProductDesriptionEntry.TABLE_NAME,
-//                projection,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null);
 
         cursor = getContentResolver().query(
                 ProductDesriptionEntry.CONTENT_URI,
