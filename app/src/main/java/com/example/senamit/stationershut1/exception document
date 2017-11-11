@@ -1,0 +1,21 @@
+
+
+ exception i found
+
+
+ 1.  Null pointer Exception on .setOnClickListener
+
+--its because of on button  findviewbyId(R.id.butoon_submit);
+i used some othere id here..from another class...thats why this error occured.
+
+2. Caused by: android.content.res.Resources$NotFoundException: String resource ID #0x0
+
+---  int num =  cursor.getCount();
+           txtCountNumber.setText(num);  --writting this this error occured (heretxtCountNumeber is TexView txtCountNUmber)
+
+      the problem is solver like this
+      productCount.setText("The total num is" + num);
+
+      I dont know why
+
+ 3.
