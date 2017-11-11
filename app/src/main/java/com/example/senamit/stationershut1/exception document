@@ -18,4 +18,13 @@ i used some othere id here..from another class...thats why this error occured.
 
       I dont know why
 
- 3.
+
+
+ why i want content provider in my app:
+
+ You want to implement the AbstractThreadedSyncAdapter, CursorAdapter, or CursorLoader classes.
+
+attribute name of content provider
+
+To avoid conflicts, authority names should use a Java-style naming convention (such as com.example.provider.cartoonprovider). Typically, it's the name of the ContentProvider subclass that implements the provider
+There is no default.
