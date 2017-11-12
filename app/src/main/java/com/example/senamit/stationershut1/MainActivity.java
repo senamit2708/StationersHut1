@@ -3,6 +3,7 @@ package com.example.senamit.stationershut1;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.ActionMenuItemView;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.senamit.stationershut1.data.StationaryContract.*;
@@ -25,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
     String LOG_TAG = MainActivity.class.getSimpleName();
     Toolbar toolbar_bottom;
     mDbHelper stationaryDbHelper;
-    Button btnAddProduct;
-    TextView txtProductDetails;
+    Cursor cursor;
+    ListView listViewProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,37 +41,31 @@ public class MainActivity extends AppCompatActivity {
 
         stationaryDbHelper = new mDbHelper(MainActivity.this);
 
-        txtProductDetails = (TextView)findViewById(R.id.txt_product_description);
-        btnAddProduct = (Button) findViewById(R.id.btn_add_product);
-
-        btnAddProduct.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fabButton = (FloatingActionButton)findViewById(R.id.fab_button);
+        fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i(LOG_TAG, "intent created");
                 Intent intent = new Intent(MainActivity.this, ShundramItemList.class);
                 startActivity(intent);
-
             }
         });
 
+        listViewProduct = (ListView)findViewById(R.id.list_view_product);
 
+//        ProductCursorAdapter productCursorAdapter = new ProductCursorAdapter(this, cursor);
+//        listViewProduct.setAdapter(productCursorAdapter);
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-     Cursor cursor =    readProducteDesctiption();
-        DisplayProdcutDetails(cursor);
+       readProducteDesctiption();
 
     }
 
-    private Cursor readProducteDesctiption() {
-        Cursor cursor;
-
-
-
-//        SQLiteDatabase database  = stationaryDbHelper.getReadableDatabase();
+    private void readProducteDesctiption() {
 
 
         String[] projection = {ProductDesriptionEntry._ID, ProductDesriptionEntry.COLUMN_PRODUCT_NAME, ProductDesriptionEntry.COLUMN_PRODUCT_PRICE,
@@ -82,41 +78,43 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 null );
 
-        return cursor;
+        ProductCursorAdapter productCursorAdapter = new ProductCursorAdapter(this, cursor);
+        listViewProduct.setAdapter(productCursorAdapter);
+
     }
 
-    private  void DisplayProdcutDetails(Cursor cursor) {
-
-        try {
-            txtProductDetails.setText("the total number of product is " + cursor.getCount() );
-
-            int indexProductId = cursor.getColumnIndex(ProductDesriptionEntry._ID);
-            int indexProductName = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_NAME);
-            int indexProductPrice = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_PRICE);
-            int indexProductQuantity = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY);
-            Log.i(LOG_TAG, "before if statement" + indexProductId + "   product name  " + indexProductName);
-
-            if (cursor != null ){
-
-
-                Log.i(LOG_TAG,"the total numbr of rows is  "+cursor.getCount());
-           Log.i(LOG_TAG, "index number of product id is  " + indexProductId + "   product name  " + indexProductName);
-            while (cursor.moveToNext()) {
-
-                int productId = cursor.getInt(indexProductId);
-                String productName = cursor.getString(indexProductName);
-                int productPrice = cursor.getInt(indexProductPrice);
-                int productQuantity = cursor.getInt(indexProductQuantity);
-
-                txtProductDetails.append("\n" + productId + " - " + productName + " - " + productPrice + " - " + productQuantity);
-            }
-            }
-
-
-        }finally {
-            cursor.close();
-        }
-    }
+//    private  void DisplayProdcutDetails(Cursor cursor) {
+//
+//        try {
+//            txtProductDetails.setText("the total number of product is " + cursor.getCount() );
+//
+//            int indexProductId = cursor.getColumnIndex(ProductDesriptionEntry._ID);
+//            int indexProductName = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_NAME);
+//            int indexProductPrice = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_PRICE);
+//            int indexProductQuantity = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY);
+//            Log.i(LOG_TAG, "before if statement" + indexProductId + "   product name  " + indexProductName);
+//
+//            if (cursor != null ){
+//
+//
+//                Log.i(LOG_TAG,"the total numbr of rows is  "+cursor.getCount());
+//           Log.i(LOG_TAG, "index number of product id is  " + indexProductId + "   product name  " + indexProductName);
+//            while (cursor.moveToNext()) {
+//
+//                int productId = cursor.getInt(indexProductId);
+//                String productName = cursor.getString(indexProductName);
+//                int productPrice = cursor.getInt(indexProductPrice);
+//                int productQuantity = cursor.getInt(indexProductQuantity);
+//
+//                txtProductDetails.append("\n" + productId + " - " + productName + " - " + productPrice + " - " + productQuantity);
+//            }
+//            }
+//
+//
+//        }finally {
+//            cursor.close();
+//        }
+//    }
 
     private void setupEvenlyDistributedToolbar() {
 
