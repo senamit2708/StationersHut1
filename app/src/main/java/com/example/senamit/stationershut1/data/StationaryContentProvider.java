@@ -90,6 +90,7 @@ public class StationaryContentProvider extends ContentProvider{
 
         }
 
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
@@ -141,9 +142,12 @@ public class StationaryContentProvider extends ContentProvider{
             Log.i(LOG_TAG, "unsuceesful insertion of new product");
             return null;
         }
-        else {
-            return ContentUris.withAppendedId(uri, id);
-        }
+
+
+
+        // Notify all listeners that the data has changed for the product content URI
+        getContext().getContentResolver().notifyChange(uri, null);
+        return ContentUris.withAppendedId(uri, id);
 
     }
 

@@ -1,6 +1,9 @@
 package com.example.senamit.stationershut1;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
@@ -23,12 +26,14 @@ import android.widget.TextView;
 import com.example.senamit.stationershut1.data.StationaryContract.*;
 import com.example.senamit.stationershut1.data.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
     String LOG_TAG = MainActivity.class.getSimpleName();
     Toolbar toolbar_bottom;
     mDbHelper stationaryDbHelper;
     Cursor cursor;
     ListView listViewProduct;
+    private static int PRODUCT_LOADER=0;
+    ProductCursorAdapter productCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,68 +57,32 @@ public class MainActivity extends AppCompatActivity {
         });
 
         listViewProduct = (ListView)findViewById(R.id.list_view_product);
-
-//        ProductCursorAdapter productCursorAdapter = new ProductCursorAdapter(this, cursor);
-//        listViewProduct.setAdapter(productCursorAdapter);
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-       readProducteDesctiption();
-
-    }
-
-    private void readProducteDesctiption() {
-
-
-        String[] projection = {ProductDesriptionEntry._ID, ProductDesriptionEntry.COLUMN_PRODUCT_NAME, ProductDesriptionEntry.COLUMN_PRODUCT_PRICE,
-        ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY};
-
-        cursor = getContentResolver().query(
-                ProductDesriptionEntry.CONTENT_URI,
-                projection,
-                null,
-                null,
-                null );
-
-        ProductCursorAdapter productCursorAdapter = new ProductCursorAdapter(this, cursor);
+        productCursorAdapter = new ProductCursorAdapter(this, cursor);
         listViewProduct.setAdapter(productCursorAdapter);
-
+        getLoaderManager().initLoader(PRODUCT_LOADER,null, this );
     }
 
-//    private  void DisplayProdcutDetails(Cursor cursor) {
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//       readProducteDesctiption();
 //
-//        try {
-//            txtProductDetails.setText("the total number of product is " + cursor.getCount() );
+//    }
+
+//    private void readProducteDesctiption() {
+
+//        String[] projection = {ProductDesriptionEntry._ID, ProductDesriptionEntry.COLUMN_PRODUCT_NAME, ProductDesriptionEntry.COLUMN_PRODUCT_PRICE,
+//        ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY};
 //
-//            int indexProductId = cursor.getColumnIndex(ProductDesriptionEntry._ID);
-//            int indexProductName = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_NAME);
-//            int indexProductPrice = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_PRICE);
-//            int indexProductQuantity = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY);
-//            Log.i(LOG_TAG, "before if statement" + indexProductId + "   product name  " + indexProductName);
+//        cursor = getContentResolver().query(
+//                ProductDesriptionEntry.CONTENT_URI,
+//                projection,
+//                null,
+//                null,
+//                null );
+
+
 //
-//            if (cursor != null ){
-//
-//
-//                Log.i(LOG_TAG,"the total numbr of rows is  "+cursor.getCount());
-//           Log.i(LOG_TAG, "index number of product id is  " + indexProductId + "   product name  " + indexProductName);
-//            while (cursor.moveToNext()) {
-//
-//                int productId = cursor.getInt(indexProductId);
-//                String productName = cursor.getString(indexProductName);
-//                int productPrice = cursor.getInt(indexProductPrice);
-//                int productQuantity = cursor.getInt(indexProductQuantity);
-//
-//                txtProductDetails.append("\n" + productId + " - " + productName + " - " + productPrice + " - " + productQuantity);
-//            }
-//            }
-//
-//
-//        }finally {
-//            cursor.close();
-//        }
 //    }
 
     private void setupEvenlyDistributedToolbar() {
@@ -194,5 +163,38 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+        String[] projection = {ProductDesriptionEntry._ID, ProductDesriptionEntry.COLUMN_PRODUCT_NAME, ProductDesriptionEntry.COLUMN_PRODUCT_PRICE,
+                ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY};
+
+        //cursorLoader will call the contentProvider....one extra parameter here is context
+        CursorLoader cursorLoader = new CursorLoader(
+                this,
+                ProductDesriptionEntry.CONTENT_URI,
+                projection,
+                null,
+                null,
+                null );
+
+        return cursorLoader;
+
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        productCursorAdapter.swapCursor(cursor);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        productCursorAdapter.swapCursor(null);
+
     }
 }
