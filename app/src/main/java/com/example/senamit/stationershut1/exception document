@@ -56,3 +56,25 @@ The java string valueOf() method converts different types of values into string.
            super((Context)null);
            throw new RuntimeException("Stub!");
        }
+
+
+java.lang.NullPointerException: Attempt to invoke virtual method 'void android.widget.EditText.setText(java.lang.CharSequence)' on a null object reference
+
+occurs because EditText edit1;
+edit1.setText("dfd");
+here edit1 is not defined thats why
+
+
+android.content.res.Resources$NotFoundException: String resource ID #0xf
+never ever store any data except String in editText or Textview
+u can covert it like this
+
+int productPrice = cursor.getInt(indexProductPrice);
+   edtProductPrice.setText(Integer.toString(productPrice));
+
+
+once i insert button into listview onItemClick listener is not working
+
+in button enter these
+android:focusable="false"
+        android:focusableInTouchMode="false"

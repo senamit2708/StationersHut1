@@ -1,7 +1,10 @@
 package com.example.senamit.stationershut1;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -16,7 +19,7 @@ import android.widget.Toast;
 import com.example.senamit.stationershut1.data.*;
 import com.example.senamit.stationershut1.data.StationaryContract.*;
 
-public class ShundramItemList extends AppCompatActivity {
+public class ShundramItemList extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     public static final String LOG_TAG = ShundramItemList.class.getSimpleName();
 
@@ -25,6 +28,8 @@ public class ShundramItemList extends AppCompatActivity {
     EditText edtProductPrice;
     EditText edtProductQuanitity;
     Button btnSubmit;
+    Uri currentProductUri;
+    private static final int PRODUCT_LOADER = 0;
 
 
     @Override
@@ -32,7 +37,14 @@ public class ShundramItemList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shundram_item_list);
 
+        edtProductName = (EditText)findViewById(R.id.edt_product_name);
+        edtProductPrice = (EditText)findViewById(R.id.edt_product_price);
+        edtProductQuanitity = (EditText)findViewById(R.id.edt_product_quantity);
+
         stationaryDbHelper = new mDbHelper(this);
+
+        Intent intent = getIntent();
+      currentProductUri =  intent.getData();
 
         btnSubmit =(Button)findViewById(R.id.btn_submit);
         btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -46,9 +58,7 @@ public class ShundramItemList extends AppCompatActivity {
 
                 SQLiteDatabase database = stationaryDbHelper.getWritableDatabase();
 
-                edtProductName = (EditText)findViewById(R.id.edt_product_name);
-                edtProductPrice = (EditText)findViewById(R.id.edt_product_price);
-                edtProductQuanitity = (EditText)findViewById(R.id.edt_product_quantity);
+
 
                 String productName = edtProductName.getText().toString().trim();
                 String productPriceString = edtProductPrice.getText().toString().trim();
@@ -78,11 +88,67 @@ public class ShundramItemList extends AppCompatActivity {
             }
         });
 
+        if (currentProductUri!=null) {
 
+            getLoaderManager().initLoader(PRODUCT_LOADER, null, this);
+
+        }
 
     }
 
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+        String[] projection = {ProductDesriptionEntry._ID, ProductDesriptionEntry.COLUMN_PRODUCT_NAME, ProductDesriptionEntry.COLUMN_PRODUCT_PRICE,
+                ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY};
+
+        //cursorLoader will call the contentProvider....one extra parameter here is context
+        CursorLoader cursorLoader = new CursorLoader(
+                this,
+                currentProductUri,
+                projection,
+                null,
+                null,
+                null );
+
+        return cursorLoader;
 
 
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        if (cursor ==null || cursor.getCount()<1){
+            return;
+        }
+        while (cursor.moveToNext()){
+
+            int indextProductName = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_NAME);
+            int indexProductPrice = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_PRICE);
+            int indexJProuctQuantity = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY);
+
+            String productName = cursor.getString(indextProductName);
+            int productPrice = cursor.getInt(indexProductPrice);
+            int productQuantity = cursor.getInt(indexJProuctQuantity);
+            Log.i(LOG_TAG, "the product name is inside loader "+ productName +" "+productPrice+" "+productQuantity);
+
+            edtProductName.setText(productName);
+            edtProductPrice.setText(Integer.toString(productPrice));
+            edtProductQuanitity.setText(Integer.toString(productQuantity));
+
+
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+        edtProductName.setText("");
+        edtProductPrice.setText("");
+        edtProductQuanitity.setText("");
+    }
 }
