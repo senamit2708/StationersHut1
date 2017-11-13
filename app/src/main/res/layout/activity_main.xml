@@ -55,7 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/list_view_product"
-            android:layout_marginLeft="16dp">
+            android:layout_marginLeft="16dp"
+            android:focusable="true">
 
 
         </ListView>
@@ -75,12 +76,6 @@
 
 
 
-    <include
-        layout="@layout/toolbar_buttom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:minHeight="?attr/actionBarSize" />
 
 
 </RelativeLayout>

@@ -157,7 +157,59 @@ public class StationaryContentProvider extends ContentProvider{
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String selection, @Nullable String[] selectionArgs) {
+
+        int match = sUriMatcher.match(uri);
+
+        switch (match){
+            case PRODUCTDESCRIPTION:
+                //here we r going to update the complete table
+                return updateProduct(uri, contentValues,selection, selectionArgs );
+              //here we r going to update specific row...
+            case PRODUCTDESCRIPTION_ID:
+                //here we have where claue ..so lets set the selection and selectionArgs..
+                selection = ProductDesriptionEntry._ID+ "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return updateProduct(uri, contentValues,selection, selectionArgs );
+                default:
+                    throw new IllegalArgumentException("the uri used to insert is bad "+ uri);
+        }
+
+    }
+
+    private int updateProduct(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+
+        if (values.containsKey(ProductDesriptionEntry.COLUMN_PRODUCT_NAME)){
+            String productName = values.getAsString(ProductDesriptionEntry.COLUMN_PRODUCT_NAME);
+
+            if (productName==null){
+                throw new IllegalArgumentException("the uri used to insert is bad "+ uri);
+            }
+        }
+        if (values.containsKey(ProductDesriptionEntry.COLUMN_PRODUCT_PRICE)){
+            String productPrice = values.getAsString(ProductDesriptionEntry.COLUMN_PRODUCT_PRICE);
+
+            if (productPrice==null){
+                throw new IllegalArgumentException("the uri used to insert is bad "+ uri);
+            }
+        }
+        if (values.containsKey(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY)){
+            String productQuantity = values.getAsString(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY);
+
+            if (productQuantity==null){
+                throw new IllegalArgumentException("the uri used to insert is bad "+ uri);
+            }
+        }
+
+        if (values.size()==0){
+            return 0;
+        }
+
+        SQLiteDatabase database = stationaryDbHelper.getWritableDatabase();
+        getContext().getContentResolver().notifyChange(uri, null);
+        return database.update(ProductDesriptionEntry.TABLE_NAME, values, selection, selectionArgs);
+
+
+
     }
 }

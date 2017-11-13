@@ -24,11 +24,10 @@
     <Button
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_add_quantity"
-        android:text="more"
+        android:id="@+id/btn_sale"
+        android:text="sale"
         android:layout_weight="2"
-        android:focusable="false"
-        android:focusableInTouchMode="false"/>
+        android:focusable="false" />
 
 
 

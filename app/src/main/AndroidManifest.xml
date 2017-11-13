@@ -18,16 +18,14 @@
         </activity>
         <activity android:name=".ShundramItemList" />
         <activity android:name=".LexiItemList" />
-        <activity android:name=".OthersItemList"></activity>
-        
+        <activity android:name=".OthersItemList" />
+
         <provider
-            android:authorities="com.example.senamit.stationershut1.data.StationaryContentProvider"
             android:name=".data.StationaryContentProvider"
-            android:exported="false"/>
-        
-        
-        
+            android:authorities="com.example.senamit.stationershut1.data.StationaryContentProvider"
+            android:exported="false" />
+
+        <activity android:name=".ProductDesription"></activity>
     </application>
- 
 
 </manifest>

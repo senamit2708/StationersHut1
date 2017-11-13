@@ -56,7 +56,7 @@ public class ShundramItemList extends AppCompatActivity implements LoaderManager
 
             private void insertProductDescription() {
 
-                SQLiteDatabase database = stationaryDbHelper.getWritableDatabase();
+
 
 
 
@@ -72,19 +72,31 @@ public class ShundramItemList extends AppCompatActivity implements LoaderManager
                 values.put(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY, productQuantity);
 
 
+                if(currentProductUri==null) {
+                    Uri newUri = getContentResolver().insert(ProductDesriptionEntry.CONTENT_URI, values);
 
-                Uri newUri = getContentResolver().insert(ProductDesriptionEntry.CONTENT_URI, values);
 
-                if (newUri == null){
+                    if (newUri == null) {
 
-                    Log.i(LOG_TAG,"insertion unsuccessful  "+ newUri);
+                        Log.i(LOG_TAG, "insertion unsuccessful  " + newUri);
+                    } else {
+                        Log.i(LOG_TAG, "insertion successful  " + newUri);
+
+                        finish();
+
+                    }
+                }else
+                    {
+                        int rowaffected = getContentResolver().update(currentProductUri, values, null, null);
+                        if (rowaffected==0){
+                            Log.i(LOG_TAG,"row is not updated");
+                        }
+                        else{
+                            Log.i(LOG_TAG, "The row is updated");
+                        }
+
                 }
-                else {
-                    Log.i(LOG_TAG,"insertion successful  "+ newUri);
-
-                    finish();
-
-                }
+                finish();
             }
         });
 
