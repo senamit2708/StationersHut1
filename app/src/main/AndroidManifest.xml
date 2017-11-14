@@ -17,8 +17,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ShundramItemList" />
-        <activity android:name=".LexiItemList" />
-        <activity android:name=".OthersItemList" />
 
         <provider
             android:name=".data.StationaryContentProvider"

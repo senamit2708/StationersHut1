@@ -6,12 +6,14 @@
     android:layout_height="match_parent"
     tools:context="com.example.senamit.stationershut1.ProductDesription"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/linearLayoutBody"
         android:layout_below="@id/toolbar_one"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,6 +40,7 @@
                 android:layout_weight="2"/>
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_marginTop="40dp"
             android:layout_width="match_parent"
@@ -67,6 +70,7 @@
                 android:layout_weight="2"/>
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_marginTop="40dp"
             android:layout_width="match_parent"
@@ -79,15 +83,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Enter quantity to add/subtract"/>
+
             <EditText
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:id="@+id/edt_product_quantity"/>
 
-
-
         </LinearLayout>
+
         <Button
             android:layout_marginTop="60dp"
             android:layout_width="match_parent"
@@ -114,7 +118,7 @@
             android:layout_height="wrap_content"
             android:text="Delete Product"
             android:id="@+id/btn_delete_product"/>
-</LinearLayout>
 
+    </LinearLayout>
 
 </LinearLayout>

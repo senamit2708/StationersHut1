@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,20 +21,20 @@ import android.widget.Toast;
 
 import com.example.senamit.stationershut1.data.StationaryContract;
 
-public class ProductDesription extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ProductDesription extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    Uri currentProductUri;
+    private Uri currentProductUri;
     private static final int PRODUCT_LOADER = 0;
-    TextView txtProductName;
-    TextView txtProductPrice;
-    TextView txtProductQuantity;
-    Button btnMoreQuantity;
-    Button btnLessQuantity;
-    Button btnOrderMore;
-    Button btnDeleteProduct;
-    EditText edtProductQuantity;
-    int originalproductQuantity;
-    public static final String LOG_TAG = ProductDesription.class.getSimpleName();
+    private TextView txtProductName;
+    private TextView txtProductPrice;
+    private TextView txtProductQuantity;
+    private Button btnMoreQuantity;
+    private Button btnLessQuantity;
+    private Button btnOrderMore;
+    private Button btnDeleteProduct;
+    private EditText edtProductQuantity;
+    private int originalproductQuantity;
+    private static final String LOG_TAG = ProductDesription.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,29 +43,38 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
 
         Intent intent = getIntent();
         currentProductUri = intent.getData();
-        txtProductName = (TextView)findViewById(R.id.txt_product_name);
-        txtProductPrice = (TextView)findViewById(R.id.txt_product_price);
-        txtProductQuantity = (TextView)findViewById(R.id.txt_product_quantity);
-        edtProductQuantity = (EditText)findViewById(R.id.edt_product_quantity);
+        txtProductName = (TextView) findViewById(R.id.txt_product_name);
+        txtProductPrice = (TextView) findViewById(R.id.txt_product_price);
+        txtProductQuantity = (TextView) findViewById(R.id.txt_product_quantity);
+        edtProductQuantity = (EditText) findViewById(R.id.edt_product_quantity);
         btnMoreQuantity = (Button) findViewById(R.id.btn_moreQuantity);
-        btnLessQuantity=(Button)findViewById(R.id.btn_lessQuantity);
-        btnOrderMore = (Button)findViewById(R.id.btn_order_more);
-        btnDeleteProduct = (Button)findViewById(R.id.btn_delete_product);
+        btnLessQuantity = (Button) findViewById(R.id.btn_lessQuantity);
+        btnOrderMore = (Button) findViewById(R.id.btn_order_more);
+        btnDeleteProduct = (Button) findViewById(R.id.btn_delete_product);
 
         btnLessQuantity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ProductDesription.this, "the button is clicked finally", Toast.LENGTH_LONG).show();
-                insertProductQuantity();
+                String productQuanitityString = edtProductQuantity.getText().toString();
+                if (TextUtils.isEmpty(productQuanitityString) || Integer.parseInt(productQuanitityString) < 0) {
+                    Toast.makeText(ProductDesription.this, R.string.enterCorrectQuantity, Toast.LENGTH_LONG).show();
+                } else {
+                    int editProductQuantity = Integer.parseInt(productQuanitityString);
+                    reduceProductQuantity(editProductQuantity);
+                }
             }
-
         });
 
         btnMoreQuantity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ProductDesription.this, "the button is clicked finally", Toast.LENGTH_LONG).show();
-                reduceProductQuantity();
+                String productQuanitityString = edtProductQuantity.getText().toString();
+                if (TextUtils.isEmpty(productQuanitityString) || Integer.parseInt(productQuanitityString) < 0) {
+                    Toast.makeText(ProductDesription.this, R.string.enterCorrectQuantity, Toast.LENGTH_LONG).show();
+                } else {
+                    int editProductQuantity = Integer.parseInt(productQuanitityString);
+                    addProductQuantity(editProductQuantity);
+                }
             }
         });
 
@@ -72,8 +82,7 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
-                intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-//                intent.putExtra(Intent.EXTRA_EMAIL, "amit");
+                intent.setData(Uri.parse("mailto:"));
                 intent.putExtra(Intent.EXTRA_SUBJECT, "order items");
                 if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivity(intent);
@@ -85,15 +94,11 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
             @Override
             public void onClick(View view) {
                 showDeleteConfirmationDialog();
-
             }
         });
 
-
-        if (currentProductUri!=null) {
-
+        if (currentProductUri != null) {
             getLoaderManager().initLoader(PRODUCT_LOADER, null, this);
-
         }
     }
 
@@ -109,7 +114,7 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
+                        return;
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
@@ -118,41 +123,28 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
 
     private void deletePet() {
 
-        if(currentProductUri !=null){
-
-
+        if (currentProductUri != null) {
             int rowDeleted = getContentResolver().delete(currentProductUri, null, null);
-
-            if (rowDeleted>0){
+            if (rowDeleted > 0) {
                 finish();
+            } else {
+                Toast.makeText(ProductDesription.this, R.string.productNotDeleted, Toast.LENGTH_LONG);
             }
-            else {
-                Toast.makeText(ProductDesription.this, "the product is not deleted", Toast.LENGTH_LONG);
-            }
-
-
-
         }
-
-
-
     }
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         String[] projection = {StationaryContract.ProductDesriptionEntry._ID, StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_NAME, StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_PRICE,
                 StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY};
 
-        //cursorLoader will call the contentProvider....one extra parameter here is context
         CursorLoader cursorLoader = new CursorLoader(
                 this,
                 currentProductUri,
                 projection,
                 null,
                 null,
-                null );
-
+                null);
         return cursorLoader;
     }
 
@@ -163,7 +155,6 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
             return;
         }
         while (cursor.moveToNext()) {
-
             int indextProductName = cursor.getColumnIndex(StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_NAME);
             int indexProductPrice = cursor.getColumnIndex(StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_PRICE);
             int indexJProuctQuantity = cursor.getColumnIndex(StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY);
@@ -171,12 +162,10 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
             String productName = cursor.getString(indextProductName);
             int productPrice = cursor.getInt(indexProductPrice);
             originalproductQuantity = cursor.getInt(indexJProuctQuantity);
-            Log.i(LOG_TAG, "the product name is inside loader " + productName + " " + productPrice + " " + originalproductQuantity);
 
             txtProductName.setText(productName);
             txtProductPrice.setText(Integer.toString(productPrice));
             txtProductQuantity.setText(Integer.toString(originalproductQuantity));
-
         }
     }
 
@@ -186,21 +175,14 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
         txtProductPrice.setText("");
         txtProductQuantity.setText("");
         edtProductQuantity.setText("");
-
     }
 
-
-
-    private void insertProductQuantity() {
-        String productQuanitityString = edtProductQuantity.getText().toString().trim();
-        int editProductQuantity = Integer.parseInt(productQuanitityString);
+    private void reduceProductQuantity(int editProductQuantity) {
 
         if (editProductQuantity <= originalproductQuantity) {
-
-            originalproductQuantity = originalproductQuantity-editProductQuantity;
+            originalproductQuantity = originalproductQuantity - editProductQuantity;
             ContentValues values = new ContentValues();
             values.put(StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY, originalproductQuantity);
-
             int rowaffected = getContentResolver().update(currentProductUri, values, null, null);
             edtProductQuantity.setText("");
             if (rowaffected == 0) {
@@ -208,31 +190,20 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
             } else {
                 Log.i(LOG_TAG, "The row is updated");
             }
-
         }
     }
 
-    private void reduceProductQuantity() {
-        String productQuanitityString = edtProductQuantity.getText().toString().trim();
-        int editProductQuantity = Integer.parseInt(productQuanitityString);
+    private void addProductQuantity(int editProductQuantity) {
 
-
-
-            originalproductQuantity = originalproductQuantity+editProductQuantity;
-            ContentValues values = new ContentValues();
-            values.put(StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY, originalproductQuantity);
-
-            int rowaffected = getContentResolver().update(currentProductUri, values, null, null);
-            edtProductQuantity.setText("");
-            if (rowaffected == 0) {
-                Log.i(LOG_TAG, "row is not updated");
-            } else {
-                Log.i(LOG_TAG, "The row is updated");
-            }
-
-
-
-
+        originalproductQuantity = originalproductQuantity + editProductQuantity;
+        ContentValues values = new ContentValues();
+        values.put(StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY, originalproductQuantity);
+        int rowaffected = getContentResolver().update(currentProductUri, values, null, null);
+        edtProductQuantity.setText("");
+        if (rowaffected == 0) {
+            Log.i(LOG_TAG, "row is not updated");
+        } else {
+            Log.i(LOG_TAG, "The row is updated");
+        }
     }
-
 }
