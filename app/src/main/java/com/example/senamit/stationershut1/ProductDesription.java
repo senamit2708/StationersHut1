@@ -1,8 +1,10 @@
 package com.example.senamit.stationershut1;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -27,6 +29,8 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
     TextView txtProductQuantity;
     Button btnMoreQuantity;
     Button btnLessQuantity;
+    Button btnOrderMore;
+    Button btnDeleteProduct;
     EditText edtProductQuantity;
     int originalproductQuantity;
     public static final String LOG_TAG = ProductDesription.class.getSimpleName();
@@ -44,8 +48,10 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
         edtProductQuantity = (EditText)findViewById(R.id.edt_product_quantity);
         btnMoreQuantity = (Button) findViewById(R.id.btn_moreQuantity);
         btnLessQuantity=(Button)findViewById(R.id.btn_lessQuantity);
+        btnOrderMore = (Button)findViewById(R.id.btn_order_more);
+        btnDeleteProduct = (Button)findViewById(R.id.btn_delete_product);
 
-        btnMoreQuantity.setOnClickListener(new View.OnClickListener() {
+        btnLessQuantity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(ProductDesription.this, "the button is clicked finally", Toast.LENGTH_LONG).show();
@@ -54,13 +60,35 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
 
         });
 
-        btnLessQuantity.setOnClickListener(new View.OnClickListener() {
+        btnMoreQuantity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(ProductDesription.this, "the button is clicked finally", Toast.LENGTH_LONG).show();
                 reduceProductQuantity();
             }
         });
+
+        btnOrderMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+//                intent.putExtra(Intent.EXTRA_EMAIL, "amit");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "order items");
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+            }
+        });
+
+        btnDeleteProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDeleteConfirmationDialog();
+
+            }
+        });
+
 
         if (currentProductUri!=null) {
 
@@ -69,6 +97,46 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
         }
     }
 
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.titleDelete)
+                .setMessage(R.string.deleteMessage)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i(LOG_TAG, "inside prompt Ok msg");
+                        deletePet();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void deletePet() {
+
+        if(currentProductUri !=null){
+
+
+            int rowDeleted = getContentResolver().delete(currentProductUri, null, null);
+
+            if (rowDeleted>0){
+                finish();
+            }
+            else {
+                Toast.makeText(ProductDesription.this, "the product is not deleted", Toast.LENGTH_LONG);
+            }
+
+
+
+        }
+
+
+
+    }
 
 
     @Override

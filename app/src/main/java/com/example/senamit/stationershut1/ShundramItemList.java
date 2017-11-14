@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +20,7 @@ import android.widget.Toast;
 import com.example.senamit.stationershut1.data.*;
 import com.example.senamit.stationershut1.data.StationaryContract.*;
 
-public class ShundramItemList extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ShundramItemList extends AppCompatActivity {
 
     public static final String LOG_TAG = ShundramItemList.class.getSimpleName();
 
@@ -50,117 +51,54 @@ public class ShundramItemList extends AppCompatActivity implements LoaderManager
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ShundramItemList.this, "the button is clicked finally", Toast.LENGTH_LONG).show();
+
                 insertProductDescription();
             }
 
             private void insertProductDescription() {
 
-
-
-
+                Uri newUri=null;
 
                 String productName = edtProductName.getText().toString().trim();
-                String productPriceString = edtProductPrice.getText().toString().trim();
-                String productQuanitityString = edtProductQuanitity.getText().toString().trim();
-                int prodcutPrice  = Integer.parseInt(productPriceString);
+                String productPriceString = edtProductPrice.getText().toString();
+                String productQuanitityString = edtProductQuanitity.getText().toString();
+                if (TextUtils.isEmpty(productName) || TextUtils.isEmpty(productQuanitityString) || TextUtils.isEmpty(productPriceString)
+                        ||Integer.parseInt(productPriceString)<0 || Integer.parseInt(productQuanitityString)<0){
+                    Toast.makeText(ShundramItemList.this, "invalid data",Toast.LENGTH_LONG).show();
+                }
+                else {
+
+
+                int prodcutPrice = Integer.parseInt(productPriceString);
                 int productQuantity = Integer.parseInt(productQuanitityString);
+                Log.i(LOG_TAG, "the productpricestring is "+productPriceString);
 
                 ContentValues values = new ContentValues();
                 values.put(ProductDesriptionEntry.COLUMN_PRODUCT_NAME, productName);
                 values.put(ProductDesriptionEntry.COLUMN_PRODUCT_PRICE, prodcutPrice);
                 values.put(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY, productQuantity);
 
+                    newUri = getContentResolver().insert(ProductDesriptionEntry.CONTENT_URI, values);
+                }
 
-                if(currentProductUri==null) {
-                    Uri newUri = getContentResolver().insert(ProductDesriptionEntry.CONTENT_URI, values);
 
 
-                    if (newUri == null) {
 
-                        Log.i(LOG_TAG, "insertion unsuccessful  " + newUri);
-                    } else {
-                        Log.i(LOG_TAG, "insertion successful  " + newUri);
+                if (newUri == null) {
 
-                        finish();
+                    Log.i(LOG_TAG, "insertion unsuccessful  " + newUri);
+                } else {
+                    Log.i(LOG_TAG, "insertion successful  " + newUri);
 
-                    }
-                }else
-                    {
-                        int rowaffected = getContentResolver().update(currentProductUri, values, null, null);
-                        if (rowaffected==0){
-                            Log.i(LOG_TAG,"row is not updated");
-                        }
-                        else{
-                            Log.i(LOG_TAG, "The row is updated");
-                        }
+                    finish();
 
                 }
-                finish();
+
+
             }
         });
 
-        if (currentProductUri!=null) {
 
-            getLoaderManager().initLoader(PRODUCT_LOADER, null, this);
-
-        }
-
-    }
-
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-
-        String[] projection = {ProductDesriptionEntry._ID, ProductDesriptionEntry.COLUMN_PRODUCT_NAME, ProductDesriptionEntry.COLUMN_PRODUCT_PRICE,
-                ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY};
-
-        //cursorLoader will call the contentProvider....one extra parameter here is context
-        CursorLoader cursorLoader = new CursorLoader(
-                this,
-                currentProductUri,
-                projection,
-                null,
-                null,
-                null );
-
-        return cursorLoader;
-
-
-
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-
-        if (cursor ==null || cursor.getCount()<1){
-            return;
-        }
-        while (cursor.moveToNext()){
-
-            int indextProductName = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_NAME);
-            int indexProductPrice = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_PRICE);
-            int indexJProuctQuantity = cursor.getColumnIndex(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY);
-
-            String productName = cursor.getString(indextProductName);
-            int productPrice = cursor.getInt(indexProductPrice);
-            int productQuantity = cursor.getInt(indexJProuctQuantity);
-            Log.i(LOG_TAG, "the product name is inside loader "+ productName +" "+productPrice+" "+productQuantity);
-
-            edtProductName.setText(productName);
-            edtProductPrice.setText(Integer.toString(productPrice));
-            edtProductQuanitity.setText(Integer.toString(productQuantity));
-
-
-        }
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-        edtProductName.setText("");
-        edtProductPrice.setText("");
-        edtProductQuanitity.setText("");
     }
 }
+

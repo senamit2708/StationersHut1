@@ -105,8 +105,15 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="seller"
-            android:id="@+id/btn_seller"/>
+            android:text="Order More"
+            android:id="@+id/btn_order_more"/>
+
+        <Button
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Product"
+            android:id="@+id/btn_delete_product"/>
 </LinearLayout>
 
 

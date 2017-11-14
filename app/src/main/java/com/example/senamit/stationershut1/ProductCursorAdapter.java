@@ -86,22 +86,23 @@ public class ProductCursorAdapter  extends CursorAdapter{
                 ContentValues incrementValue = new ContentValues();
                 cursor.moveToPosition(position);
                 int productQuantity = cursor.getInt(productQuantityColumnIndex);
-                int newquantity = productQuantity+1;
-                Log.i(LOG_TAG, "the current quantity of product is  "+ productQuantity);
-                Log.i(LOG_TAG, "the new quantity of product is "+ newquantity);
-                incrementValue.put(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY, newquantity);
-                int id = cursor.getInt(productId);
-                Log.i(LOG_TAG, "product id is "+productId);
-                Uri currentProductUri = ContentUris.withAppendedId(ProductDesriptionEntry.CONTENT_URI, id);
-                int rowaffected = context.getContentResolver().update(currentProductUri, incrementValue, null, null);
-                if (rowaffected==0){
-                    Log.i(LOG_TAG,"row is not updated");
-                }
-                else{
-                    Log.i(LOG_TAG, "The row is updated");
-                }
 
+                if (productQuantity>0) {
+                    int newquantity = productQuantity - 1;
+                    Log.i(LOG_TAG, "the current quantity of product is  " + productQuantity);
+                    Log.i(LOG_TAG, "the new quantity of product is " + newquantity);
+                    incrementValue.put(ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY, newquantity);
+                    int id = cursor.getInt(productId);
+                    Log.i(LOG_TAG, "product id is " + productId);
+                    Uri currentProductUri = ContentUris.withAppendedId(ProductDesriptionEntry.CONTENT_URI, id);
+                    int rowaffected = context.getContentResolver().update(currentProductUri, incrementValue, null, null);
+                    if (rowaffected == 0) {
+                        Log.i(LOG_TAG, "row is not updated");
+                    } else {
+                        Log.i(LOG_TAG, "The row is updated");
+                    }
 
+                }
 
             }
         });

@@ -152,9 +152,27 @@ public class StationaryContentProvider extends ContentProvider{
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+
+        SQLiteDatabase database = stationaryDbHelper.getWritableDatabase();
+        getContext().getContentResolver().notifyChange(uri, null);
+        int match = sUriMatcher.match(uri);
+        int rowDelted;
+
+        switch (match){
+            case PRODUCTDESCRIPTION:
+
+                return    database.delete(ProductDesriptionEntry.TABLE_NAME, selection, selectionArgs);
+            case PRODUCTDESCRIPTION_ID:
+                selection = ProductDesriptionEntry._ID+ "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return  database.delete(ProductDesriptionEntry.TABLE_NAME, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("the uri used to insert is bad "+ uri);
     }
+
+    }
+
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String selection, @Nullable String[] selectionArgs) {

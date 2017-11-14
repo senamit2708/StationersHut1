@@ -4,4 +4,9 @@
     <string name="product_price">Price</string>
     <string name="product_quantity">Quantity</string>
     <string name="More">Add</string>
+    <string name="internetAlertMessage">Delete the Product</string>
+    <string name="interntAlertTitle">Alert Delete</string>
+    <string name="firealert">Ok</string>
+    <string name="titleDelete">Delete entry</string>
+    <string name="deleteMessage">Are you sure you want to delete this entry?</string>
 </resources>
