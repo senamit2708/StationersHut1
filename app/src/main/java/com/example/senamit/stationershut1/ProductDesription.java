@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +37,7 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
     private Button btnDeleteProduct;
     private EditText edtProductQuantity;
     private int originalproductQuantity;
+    private ImageView imgProductImage;
     private static final String LOG_TAG = ProductDesription.class.getSimpleName();
 
     @Override
@@ -51,6 +55,7 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
         btnLessQuantity = (Button) findViewById(R.id.btn_lessQuantity);
         btnOrderMore = (Button) findViewById(R.id.btn_order_more);
         btnDeleteProduct = (Button) findViewById(R.id.btn_delete_product);
+        imgProductImage = (ImageView) findViewById(R.id.img_product_image);
 
         btnLessQuantity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +114,7 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Log.i(LOG_TAG, "inside prompt Ok msg");
-                        deletePet();
+                        deleteProduct();
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -121,7 +126,7 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
                 .show();
     }
 
-    private void deletePet() {
+    private void deleteProduct() {
 
         if (currentProductUri != null) {
             int rowDeleted = getContentResolver().delete(currentProductUri, null, null);
@@ -136,7 +141,7 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         String[] projection = {StationaryContract.ProductDesriptionEntry._ID, StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_NAME, StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_PRICE,
-                StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY};
+                StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY, StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_IMAGE};
 
         CursorLoader cursorLoader = new CursorLoader(
                 this,
@@ -158,14 +163,19 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
             int indextProductName = cursor.getColumnIndex(StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_NAME);
             int indexProductPrice = cursor.getColumnIndex(StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_PRICE);
             int indexJProuctQuantity = cursor.getColumnIndex(StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_QUANTITY);
+            int indexProductImage = cursor.getColumnIndex(StationaryContract.ProductDesriptionEntry.COLUMN_PRODUCT_IMAGE);
 
             String productName = cursor.getString(indextProductName);
             int productPrice = cursor.getInt(indexProductPrice);
             originalproductQuantity = cursor.getInt(indexJProuctQuantity);
+            byte[] blob = cursor.getBlob(indexProductImage);
+
+            Bitmap bitmapImage = BitmapFactory.decodeByteArray(blob, 0, blob.length);
 
             txtProductName.setText(productName);
             txtProductPrice.setText(Integer.toString(productPrice));
             txtProductQuantity.setText(Integer.toString(originalproductQuantity));
+            imgProductImage.setImageBitmap(bitmapImage);
         }
     }
 

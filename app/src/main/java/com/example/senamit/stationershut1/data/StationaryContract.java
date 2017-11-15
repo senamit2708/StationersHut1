@@ -20,6 +20,7 @@ public class StationaryContract {
         public static final String COLUMN_PRODUCT_NAME = "ProductName";
         public static final String COLUMN_PRODUCT_PRICE = "ProductPrice";
         public static final String COLUMN_PRODUCT_QUANTITY = "ProductQuantity";
+        public static final String COLUMN_PRODUCT_IMAGE = "ProductImage";
 
     }
 
