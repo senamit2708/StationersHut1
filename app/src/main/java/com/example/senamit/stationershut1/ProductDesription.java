@@ -57,6 +57,16 @@ public class ProductDesription extends AppCompatActivity implements LoaderManage
         btnDeleteProduct = (Button) findViewById(R.id.btn_delete_product);
         imgProductImage = (ImageView) findViewById(R.id.img_product_image);
 
+        Button btnBarCodeScanner = (Button)findViewById(R.id.btn_barcode_scaner);
+        btnBarCodeScanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProductDesription.this, BarCodeReader.class);
+                startActivity(intent);
+            }
+        });
+
+
         btnLessQuantity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
